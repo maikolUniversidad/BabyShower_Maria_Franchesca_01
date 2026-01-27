@@ -126,7 +126,14 @@ function GiftCard({ gift, onClaim }: { gift: Gift; onClaim: () => void }) {
             </div>
 
             <h3 className="text-xl font-medium text-gray-900 mb-2">{gift.title}</h3>
-            {gift.notes && <p className="text-gray-500 text-sm mb-4 flex-grow">{gift.notes}</p>}
+
+            {gift.notes && (
+                <div className="mb-4 flex-grow">
+                    <p className="text-sm italic text-gray-600 border-l-2 border-vintage-sepia/20 pl-3 py-1 bg-vintage-cream/30 rounded-r-lg">
+                        {gift.notes}
+                    </p>
+                </div>
+            )}
 
             <div className="mt-auto space-y-3 pt-4 border-t border-gray-50">
                 {gift.store_url && (
