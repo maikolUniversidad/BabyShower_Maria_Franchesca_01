@@ -1,8 +1,21 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Vintage Color Palette */
+  --vintage-blush: #d4a5a5;
+  --vintage-sage: #a8b5a0;
+  --vintage-ivory: #f4ede3;
+  --vintage-sepia: #8b7355;
+  --vintage-pink-bg: #f5e6e8;
+  --vintage-dusty-pink: #d9a5a0;
+  --vintage-cream: #faf7f2;
+
+  /* Legacy colors */
+  --background: #faf7f2;
+  --foreground: #8b7355;
+  --font-serif: "Playfair Display", serif;
+  --font-script: "Great Vibes", cursive;
+  --font-vintage-serif: "Cormorant Garamond", serif;
 }
 
 @theme inline {
@@ -10,17 +23,155 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-serif: var(--font-serif);
 }
 
 body {
-  background: var(--background);
+  background: linear-gradient(to bottom, #f5e6e8 0%, #f5e6e8 100%);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-vintage-serif), serif;
+  position: relative;
+}
+
+/* Paper texture overlay */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    repeating-linear-gradient(0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.01) 2px,
+      rgba(0, 0, 0, 0.01) 4px);
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.3;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-vintage-serif), serif;
+}
+
+/* Vintage animations - subtle only */
+@keyframes gentle-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: gentle-fade-in 1.2s ease-out forwards;
+}
+
+.animate-in {
+  animation-duration: 0.8s;
+  animation-fill-mode: forwards;
+  animation-timing-function: ease-out;
+  opacity: 0;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.fade-in {
+  animation-name: fadeIn;
+}
+
+@keyframes gentleSlide {
+  from {
+    transform: translateY(-5px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.slide-in-from-top-2 {
+  animation-name: gentleSlide;
+}
+
+@keyframes softZoom {
+  from {
+    transform: scale(0.98);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.zoom-in,
+.zoom-in-95 {
+  animation-name: softZoom;
+}
+
+/* Vintage script font utility */
+.font-script {
+  font-family: var(--font-script), cursive;
+}
+
+.font-vintage-serif {
+  font-family: var(--font-vintage-serif), serif;
+}
+
+/* Letter spacing for vintage uppercase */
+.tracking-vintage {
+  letter-spacing: 0.15em;
+}
+
+/* Vintage text colors */
+.text-vintage-blush {
+  color: var(--vintage-blush);
+}
+
+.text-vintage-sage {
+  color: var(--vintage-sage);
+}
+
+.text-vintage-sepia {
+  color: var(--vintage-sepia);
+}
+
+.text-vintage-dusty-pink {
+  color: var(--vintage-dusty-pink);
+}
+
+/* Backgrounds */
+.bg-vintage-ivory {
+  background-color: var(--vintage-ivory);
+}
+
+.bg-vintage-cream {
+  background-color: var(--vintage-cream);
+}
+
+.bg-vintage-pink {
+  background-color: var(--vintage-pink-bg);
 }

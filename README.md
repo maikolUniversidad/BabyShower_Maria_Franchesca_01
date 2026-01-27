@@ -1,36 +1,88 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Baby Shower Invitation App
 
-## Getting Started
+Landing page interactiva para Baby Shower construida con Next.js, React, Tailwind y Google Sheets como base de datos.
 
-First, run the development server:
+## Características
+
+- 📱 Diseño Mobile-first y responsive.
+- 💌 RSVP con formulario validado.
+- 🎁 Lista de Regalos con control de estado (Disponibles/Seleccionados) para evitar duplicados.
+- 💬 Libro de mensajes para los papás.
+- 🔐 Panel de Administración simple para ver respuestas.
+- 🚀 Integración con Google Sheets en tiempo real.
+
+## Configuración Local
+
+1. **Clonar/Descargar** el proyecto.
+2. **Instalar dependencias**:
+   ```bash
+   npm install
+   ```
+3. **Variables de Entorno**:
+   El proyecto ya incluye un archivo `.env.local` pre-configurado con las credenciales de Service Account (según instrucciones).
+   
+   **IMPORTANTE**: Debes actualizar `GOOGLE_SHEETS_SPREADSHEET_ID` en el archivo `.env.local` con el ID de tu hoja de cálculo.
+
+## Configuración de Google Sheets
+
+1. Crea una nueva Hoja de Cálculo en Google Sheets.
+2. El ID de la hoja es la parte larga de la URL: `https://docs.google.com/spreadsheets/d/ID_DE_LA_HOJA/edit...`
+3. **Compartir la hoja**:
+   Debes dar acceso de edición al Service Account email:
+   `sheets-writer@serpa-inmersivo.iam.gserviceaccount.com`
+   (Dale rol de "Editor").
+4. **Crear las pestañas (Tabs)**:
+   Debes crear 3 pestañas con los siguientes nombres exactos y columnas en la fila 1:
+
+   **Tab "Gifts"**
+   - A: `gift_id` (Identificador único, ej: "gift-1", "gift-2")
+   - B: `title` (Nombre del regalo)
+   - C: `store_url` (Link de compra)
+   - D: `notes` (Notas opcionales)
+   - E: `status` (Dejar vacío o escribir "available". El sistema pondrá "claimed" cuando se elija)
+   - F: `claimed_by`
+   - G: `claimed_phone`
+   - H: `claimed_email`
+   - I: `claimed_at`
+
+   **Tab "RSVP"**
+   - A: `timestamp`
+   - B: `name`
+   - C: `phone`
+   - D: `email`
+   - E: `attending`
+   - F: `guest_count`
+   - G: `notes`
+
+   **Tab "Messages"**
+   - A: `timestamp`
+   - B: `name`
+   - C: `message`
+
+## Ejecutar Localmente
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
+Abre [http://localhost:3000](http://localhost:3000).
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Despliegue en Vercel
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Sube este código a GitHub.
+2. Crea un nuevo proyecto en [Vercel](https://vercel.com) importando el repo.
+3. En la configuración del proyecto en Vercel, ve a **Environment Variables** y agrega las siguientes:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+   | Nombre | Valor |
+   |--------|-------|
+   | `GOOGLE_SHEETS_CLIENT_EMAIL` | `sheets-writer@serpa-inmersivo.iam.gserviceaccount.com` |
+   | `GOOGLE_SHEETS_PRIVATE_KEY` | (El contenido de la llave privada. **Nota**: En Vercel, copia todo el bloque incluyendo `-----BEGIN...` y `-----END...`. Vercel maneja los saltos de línea automáticamente o puedes usar `\n` literal si tienes problemas, pero el código está preparado para reemplazar `\n` string por saltos reales). |
+   | `GOOGLE_SHEETS_SPREADSHEET_ID`| Tu ID de hoja de cálculo |
+   | `ADMIN_PASSWORD` | Contraseña para el panel admin (ej: `admin123`) |
 
-## Learn More
+4. Deploy!
 
-To learn more about Next.js, take a look at the following resources:
+## Uso del Admin Panel
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Accede a `/admin` e ingresa la contraseña configurada en `ADMIN_PASSWORD`.
+Podrás ver las tablas de RSVP, Regalos y Mensajes en tiempo real.
+# BabyShower_Maria_Franchesca
