@@ -39,8 +39,7 @@ export default function GiftList() {
         setSelectedGift(null);
     };
 
-    const onClaimSuccess = () => {
-        closeClaimModal();
+    const onUnclaimSuccess = () => {
         fetchGifts(); // Refresh data
     };
 
@@ -51,6 +50,29 @@ export default function GiftList() {
             </div>
         );
     }
+
+    const handleUnclaim = async (giftId: string) => {
+        const confirmed = window.confirm("¿Estás seguro? Este regalo ya es tuyo y vas a quitar la selección.");
+        if (!confirmed) return;
+
+        try {
+            const res = await fetch('/api/gifts/unclaim', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ gift_id: giftId }),
+            });
+
+            if (res.ok) {
+                onUnclaimSuccess();
+            } else {
+                const data = await res.json();
+                alert(data.error || 'Error al liberar el regalo');
+            }
+        } catch (e) {
+            console.error(e);
+            alert('Error al liberar el regalo');
+        }
+    };
 
     return (
         <div className="space-y-8">
@@ -63,7 +85,12 @@ export default function GiftList() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {gifts.map((gift) => (
-                    <GiftCard key={gift.gift_id} gift={gift} onClaim={() => openClaimModal(gift)} />
+                    <GiftCard
+                        key={gift.gift_id}
+                        gift={gift}
+                        onClaim={() => openClaimModal(gift)}
+                        onUnclaim={() => handleUnclaim(gift.gift_id)}
+                    />
                 ))}
             </div>
 
@@ -73,20 +100,8 @@ export default function GiftList() {
         </div>
     );
 }
-
-function getDirectImageUrl(url: string) {
-    if (!url) return '';
-    if (url.includes('drive.google.com')) {
-        const idMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
-        if (idMatch && idMatch[1]) {
-            // Using lh3.googleusercontent.com which is often more reliable for direct embedding
-            return `https://lh3.googleusercontent.com/d/${idMatch[1]}=s1000`;
-        }
-    }
-    return url;
-}
-
-function GiftCard({ gift, onClaim }: { gift: Gift; onClaim: () => void }) {
+...
+function GiftCard({ gift, onClaim, onUnclaim }: { gift: Gift; onClaim: () => void; onUnclaim: () => void }) {
     const isClaimed = gift.status === 'claimed' || gift.status === 'disqualified';
 
     return (
@@ -158,9 +173,17 @@ function GiftCard({ gift, onClaim }: { gift: Gift; onClaim: () => void }) {
                         Regalar también
                     </button>
                 ) : isClaimed ? (
-                    <div className="flex items-center gap-2 text-sm text-gray-500 bg-gray-100 px-3 py-2 rounded-lg">
-                        <User className="w-4 h-4" />
-                        <span>Seleccionado por {gift.claimed_by}</span>
+                    <div className="space-y-3">
+                        <div className="flex items-center gap-2 text-sm text-gray-500 bg-gray-100 px-3 py-2 rounded-lg">
+                            <User className="w-4 h-4" />
+                            <span>Seleccionado por {gift.claimed_by}</span>
+                        </div>
+                        <button
+                            onClick={onUnclaim}
+                            className="w-full py-2 bg-white text-gray-600 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors text-xs font-medium"
+                        >
+                            Escoger otro regalo diferente
+                        </button>
                     </div>
                 ) : (
                     <button

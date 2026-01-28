@@ -143,6 +143,46 @@ export async function claimGift(giftId: string, data: { name: string; phone?: st
     }
 }
 
+export async function unclaimGift(giftId: string): Promise<void> {
+    const sheets = await getSheets();
+    const spreadsheetId = process.env.GOOGLE_SHEETS_SPREADSHEET_ID;
+
+    // 1. Get Gift Info
+    const response = await sheets.spreadsheets.values.get({
+        spreadsheetId,
+        range: 'Gifts!A:K',
+    });
+
+    const rows = response.data.values || [];
+    const rowIndex = rows.findIndex((row) => row[0] === giftId);
+
+    if (rowIndex === -1) {
+        throw new Error('Gift not found');
+    }
+
+    const row = rows[rowIndex];
+    const type = (row[10] as 'unique' | 'unlimited') || 'unique';
+    const realRowIndex = rowIndex + 1;
+
+    // 2. Update Status in Gifts Tab (ONLY if unique)
+    if (type === 'unique') {
+        await sheets.spreadsheets.values.update({
+            spreadsheetId,
+            range: `Gifts!E${realRowIndex}:I${realRowIndex}`,
+            valueInputOption: 'USER_ENTERED',
+            requestBody: {
+                values: [[
+                    'available',
+                    '',
+                    '',
+                    '',
+                    ''
+                ]]
+            }
+        });
+    }
+}
+
 export async function addRSVP(data: RSVP): Promise<void> {
     const sheets = await getSheets();
     const spreadsheetId = process.env.GOOGLE_SHEETS_SPREADSHEET_ID;
