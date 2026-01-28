@@ -39,17 +39,10 @@ export default function GiftList() {
         setSelectedGift(null);
     };
 
-    const onUnclaimSuccess = () => {
+    const onClaimSuccess = () => {
+        closeClaimModal();
         fetchGifts(); // Refresh data
     };
-
-    if (loading) {
-        return (
-            <div className="flex justify-center p-12">
-                <Loader2 className="w-8 h-8 animate-spin text-gray-400" />
-            </div>
-        );
-    }
 
     const handleUnclaim = async (giftId: string) => {
         const confirmed = window.confirm("¿Estás seguro? Este regalo ya es tuyo y vas a quitar la selección.");
@@ -63,7 +56,7 @@ export default function GiftList() {
             });
 
             if (res.ok) {
-                onUnclaimSuccess();
+                fetchGifts();
             } else {
                 const data = await res.json();
                 alert(data.error || 'Error al liberar el regalo');
@@ -100,7 +93,19 @@ export default function GiftList() {
         </div>
     );
 }
-...
+
+function getDirectImageUrl(url: string) {
+    if (!url) return '';
+    if (url.includes('drive.google.com')) {
+        const idMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
+        if (idMatch && idMatch[1]) {
+            // Using lh3.googleusercontent.com which is often more reliable for direct embedding
+            return `https://lh3.googleusercontent.com/d/${idMatch[1]}=s1000`;
+        }
+    }
+    return url;
+}
+
 function GiftCard({ gift, onClaim, onUnclaim }: { gift: Gift; onClaim: () => void; onUnclaim: () => void }) {
     const isClaimed = gift.status === 'claimed' || gift.status === 'disqualified';
 
