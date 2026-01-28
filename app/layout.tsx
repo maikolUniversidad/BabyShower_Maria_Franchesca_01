@@ -34,6 +34,8 @@ export const metadata: Metadata = {
   description: "Únete a nosotros para celebrar la llegada de Maria Franchesca",
 };
 
+import MusicPlayer from "@/components/MusicPlayer";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -45,6 +47,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} ${greatVibes.variable} ${cormorant.variable} antialiased`}
       >
         {children}
+        <MusicPlayer />
       </body>
     </html>
   );
