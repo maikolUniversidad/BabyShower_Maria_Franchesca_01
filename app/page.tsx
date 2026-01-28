@@ -12,7 +12,7 @@ export default function Home() {
         {/* Decorative Quote */}
         <section className="text-center space-y-6 max-w-2xl mx-auto">
           <p className="text-lg md:text-xl font-vintage-serif text-vintage-sepia italic leading-relaxed">
-            "Un bebé es un comienzo de todas las cosas maravillosas: esperanzas, sueños y posibilidades infinitas."
+            "Nuestra bebé es la bendición más grande, es el regalo del cielo más precioso que Dios nos ha entregado para cuidarla y amarla."
           </p>
           <div className="w-16 h-px bg-vintage-sepia/30 mx-auto"></div>
         </section>
