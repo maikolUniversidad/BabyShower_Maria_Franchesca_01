@@ -57,7 +57,7 @@ export default function GiftList() {
             <div className="text-center max-w-2xl mx-auto mb-10">
                 <h2 className="text-3xl font-serif text-gray-800 mb-2">Lista de Regalos</h2>
                 <p className="text-gray-500">
-                    Estos son algunos detalles que nos gustarían para Maria Franchesca. Si decides regal arnos algo de la lista, por favor márcalo como "Seleccionado" para evitar repetidos.
+                    Estos son algunos detalles que nos gustarían para Maria Franchesca. Si decides regalarnos algo de la lista, por favor márcalo como "Seleccionado" para evitar repetidos.
                 </p>
             </div>
 
