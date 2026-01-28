@@ -7,25 +7,41 @@ export default function MusicPlayer() {
     const [isPlaying, setIsPlaying] = useState(false);
     const audioRef = useRef<HTMLAudioElement | null>(null);
 
-    // Intentar reproducir automáticamente al cargar (la mayoría de navegadores lo bloquearán)
+    // Intentar reproducir automáticamente al cargar e interactuar
     useEffect(() => {
+        const playAudio = () => {
+            if (audioRef.current && !isPlaying) {
+                audioRef.current.play()
+                    .then(() => {
+                        setIsPlaying(true);
+                        // Remover los listeners una vez que empiece a sonar
+                        window.removeEventListener("click", playAudio);
+                        window.removeEventListener("touchstart", playAudio);
+                    })
+                    .catch((error) => {
+                        console.log("Play failed:", error);
+                    });
+            }
+        };
+
         if (audioRef.current) {
             audioRef.current.volume = 0.5;
 
-            const playPromise = audioRef.current.play();
-
-            if (playPromise !== undefined) {
-                playPromise
-                    .then(() => {
-                        setIsPlaying(true);
-                    })
-                    .catch((error) => {
-                        console.log("Autoplay was prevented:", error);
-                        setIsPlaying(false);
-                    });
-            }
+            // Intento inicial
+            audioRef.current.play()
+                .then(() => setIsPlaying(true))
+                .catch(() => {
+                    // Si falla (bloqueado por el navegador), esperar interacción
+                    window.addEventListener("click", playAudio);
+                    window.addEventListener("touchstart", playAudio);
+                });
         }
-    }, []);
+
+        return () => {
+            window.removeEventListener("click", playAudio);
+            window.removeEventListener("touchstart", playAudio);
+        };
+    }, [isPlaying]);
 
     const toggleMusic = () => {
         if (audioRef.current) {
