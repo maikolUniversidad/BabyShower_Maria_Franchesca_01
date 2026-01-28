@@ -9,39 +9,38 @@ export default function MusicPlayer() {
 
     // Intentar reproducir automáticamente al cargar e interactuar
     useEffect(() => {
-        const playAudio = () => {
-            if (audioRef.current && !isPlaying) {
-                audioRef.current.play()
+        const audio = audioRef.current;
+        if (!audio) return;
+
+        audio.volume = 0.5;
+
+        const handleFirstInteraction = () => {
+            if (audio.paused) {
+                audio.play()
                     .then(() => {
                         setIsPlaying(true);
-                        // Remover los listeners una vez que empiece a sonar
-                        window.removeEventListener("click", playAudio);
-                        window.removeEventListener("touchstart", playAudio);
+                        cleanup();
                     })
-                    .catch((error) => {
-                        console.log("Play failed:", error);
-                    });
+                    .catch((error) => console.log("Play failed:", error));
             }
         };
 
-        if (audioRef.current) {
-            audioRef.current.volume = 0.5;
-
-            // Intento inicial
-            audioRef.current.play()
-                .then(() => setIsPlaying(true))
-                .catch(() => {
-                    // Si falla (bloqueado por el navegador), esperar interacción
-                    window.addEventListener("click", playAudio);
-                    window.addEventListener("touchstart", playAudio);
-                });
-        }
-
-        return () => {
-            window.removeEventListener("click", playAudio);
-            window.removeEventListener("touchstart", playAudio);
+        const cleanup = () => {
+            window.removeEventListener("click", handleFirstInteraction);
+            window.removeEventListener("touchstart", handleFirstInteraction);
         };
-    }, [isPlaying]);
+
+        // Intento inicial
+        audio.play()
+            .then(() => setIsPlaying(true))
+            .catch(() => {
+                // Si falla (bloqueado por el navegador), esperar interacción
+                window.addEventListener("click", handleFirstInteraction);
+                window.addEventListener("touchstart", handleFirstInteraction);
+            });
+
+        return cleanup;
+    }, []); // Empty dependency array is critical here
 
     const toggleMusic = () => {
         if (audioRef.current) {
